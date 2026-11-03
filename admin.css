@@ -1,0 +1,29 @@
+/* 꽁밥 운영: 공개 사이트의 style.css·gonggang.css 위에 운영 화면 요소만 더한다. */
+.admin-status { background: var(--code-bg); border-bottom: 1px solid var(--rule); font-size: 13.5px; color: var(--text-2); }
+.admin-status .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; padding-top: 8px; padding-bottom: 8px; }
+.admin-status .dirty { color: var(--accent); font-weight: 650; }
+.admin-status .btn { margin-left: auto; }
+.admin-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; margin-top: 8px; }
+.admin-grid .panel-box h3 { margin: 0 0 6px; }
+.admin-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 4px 0 12px; }
+.admin-toolbar .search { flex: 1 1 280px; height: 42px; }
+.admin-toolbar select { width: auto; }
+.admin-table { width: 100%; }
+.admin-table td { vertical-align: top; }
+.admin-table tbody tr[data-edit] { cursor: pointer; }
+.admin-table tbody tr[data-edit]:hover td { background: var(--code-bg); }
+.issue-list .issue { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.issue-list .issue p { margin: 4px 0; color: var(--text-2); }
+.panel-box.narrow { max-width: 520px; }
+.steps { padding-left: 1.3em; }
+.steps li { margin: 6px 0; line-height: 1.65; }
+.edit-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 12px; }
+.edit-grid .full { grid-column: 1 / -1; }
+.edit-grid .checkbox { align-self: center; }
+#edit-dialog { max-width: 860px; }
+.dialog-bottom .spacer { flex: 1; }
+.dialog-bottom { gap: 8px; }
+@media (max-width: 800px) {
+  .admin-grid { grid-template-columns: minmax(0, 1fr); }
+  .edit-grid { grid-template-columns: 1fr 1fr; }
+}
