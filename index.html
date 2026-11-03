@@ -11,8 +11,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.20/400.css">
 <link rel="stylesheet" href="../kkongbap/style.css">
 <link rel="stylesheet" href="../kkongbap/gonggang.css">
-<link rel="stylesheet" href="admin.css?v=1">
-<script type="module" src="admin.js?v=2"></script>
+<link rel="stylesheet" href="admin.css?v=2">
+<script type="module" src="admin.js?v=3"></script>
 </head>
 <body data-project="gonggang" class="has-tabs">
 <a class="skip" href="#main">본문 바로가기</a>
@@ -74,6 +74,7 @@
 <div id="sources-view" class="view wrap wide" hidden><div class="content solo">
 <section><div class="sec-head"><span class="n">05</span><h2>출처 확인</h2></div>
 <p class="lead">공지 게시판을 직접 확인했으면 ‘오늘 확인함’을 누르세요. ‘변경 저장’ 때 함께 저장되고, 꽁밥 ‘안내’ 탭의 마지막 확인 날짜가 바뀝니다. 학생회 인스타그램은 공개 게시물만 보고, 자동 확인은 하지 않습니다.</p>
+<div class="admin-toolbar"><div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input type="search" id="src-search" aria-label="출처 검색" placeholder="이름·묶음·주소 검색"></div><select id="src-filter" aria-label="보기"><option value="">전체</option><option value="stale">7일 넘게 안 본 곳</option><option value="never">확인 기록 없음</option><option value="blocked">로그인·접근 제한</option></select><span class="muted small" id="src-count"></span></div>
 <div class="table-wrap"><table class="admin-table"><thead><tr><th scope="col">출처</th><th scope="col">마지막 확인</th><th scope="col"></th></tr></thead><tbody id="src-rows"></tbody></table></div>
 </section></div></div>
 

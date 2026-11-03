@@ -27,3 +27,4 @@
   .admin-grid { grid-template-columns: minmax(0, 1fr); }
   .edit-grid { grid-template-columns: 1fr 1fr; }
 }
+.admin-table tr.src-grp th { background: var(--code-bg); text-align: left; font-size: 14px; padding: 8px 10px; }

@@ -3,7 +3,7 @@
 const PUBLIC_BASE='../kkongbap/';
 const PUBLIC='https://yu-jusang.github.io/kkongbap/';
 const {DAYS,koreaDate,weekday,phase,PHASES,safeUrl,parseNotice,weekStart,addDays,weekGroups,bundleOf}=await import(PUBLIC_BASE+'core.js');
-const {SOURCES,SOURCE_LABEL,CHECK_LABEL,CATEGORY,REGISTRATION,BUNDLES,TIP_FORM}=await import(PUBLIC_BASE+'content.js');
+const {SOURCES,SOURCE_GROUPS,KIND_LABEL,SOURCE_LABEL,CHECK_LABEL,CATEGORY,REGISTRATION,BUNDLES,TIP_FORM}=await import(PUBLIC_BASE+'content.js?v=6');
 
 const $=selector=>document.querySelector(selector);
 let toastTimer,weekOffset=0;
@@ -426,7 +426,17 @@ async function runMenu(){
 // ───────── 출처 확인 ─────────
 function renderSources(){
   const checks=doc.status?.sourceChecks||[];
-  $('#src-rows').innerHTML=SOURCES.map(s=>{const c=checks.find(x=>x.key===s.key);return `<tr><td><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer"><b>${esc(s.name)}</b></a><br><span class="muted small">${s.kind==='instagram'?'학생회 인스타':'공식 공지'}</span></td><td class="small">${c?`${esc(CHECK_LABEL[c.state]||c.state)} · <span class="mono">${new Date(c.checkedAt).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})}</span>${c.detail?`<br><span class="muted">${esc(c.detail)}</span>`:''}`:'확인 기록 없음'}</td><td><button type="button" class="btn btn-secondary btn-sm" data-check-source="${esc(s.key)}">오늘 확인함</button></td></tr>`;}).join('');
+  const query=$('#src-search').value.trim().toLowerCase(),filter=$('#src-filter').value,week=Date.now()-7*864e5;
+  const keep=s=>{const c=checks.find(x=>x.key===s.key);
+    if(query&&!`${s.name} ${s.group} ${s.url}`.toLowerCase().includes(query))return false;
+    if(filter==='stale')return !c||new Date(c.checkedAt).getTime()<week;
+    if(filter==='never')return !c;
+    if(filter==='blocked')return c&&(c.state==='blocked'||c.state==='browser_only');
+    return true;};
+  const row=s=>{const c=checks.find(x=>x.key===s.key);return `<tr><td><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer"><b>${esc(s.name)}</b></a><br><span class="muted small">${esc(KIND_LABEL[s.kind]||'')}</span></td><td class="small">${c?`${esc(CHECK_LABEL[c.state]||c.state)} · <span class="mono">${new Date(c.checkedAt).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})}</span>${c.detail?`<br><span class="muted">${esc(c.detail)}</span>`:''}`:'확인 기록 없음'}</td><td><button type="button" class="btn btn-secondary btn-sm" data-check-source="${esc(s.key)}">오늘 확인함</button></td></tr>`;};
+  const shown=SOURCES.filter(keep);
+  $('#src-count').textContent=`${shown.length} / ${SOURCES.length}곳`;
+  $('#src-rows').innerHTML=SOURCE_GROUPS.map(g=>{const list=shown.filter(s=>s.group===g);return list.length?`<tr class="src-grp"><th colspan="3" scope="rowgroup">${esc(g)} <span class="muted">${list.length}곳</span></th></tr>${list.map(row).join('')}`:'';}).join('')||'<tr><td colspan="3" class="tl-empty">해당하는 출처가 없습니다.</td></tr>';
 }
 function markChecked(key){
   const s=SOURCES.find(x=>x.key===key);if(!s)return;
@@ -455,6 +465,7 @@ function initialize(){
   window.addEventListener('hashchange',()=>setView(location.hash.slice(1)));
   window.addEventListener('beforeunload',e=>{if(isDirty()){e.preventDefault();e.returnValue='';}});
   $('#ev-search').addEventListener('input',renderEvents);$('#ev-filter').addEventListener('change',renderEvents);
+  $('#src-search').addEventListener('input',renderSources);$('#src-filter').addEventListener('change',renderSources);
   $('#ev-new').onclick=()=>openEditor({title:'',source:'notice',verifiedAt:koreaDate(),registration:'unknown',category:'food',uncertain:[]},true);
   $('#edit-form').onsubmit=e=>{e.preventDefault();applyEditor();};
   $('#edit-delete').onclick=()=>{if(!editing?.id||!confirm('이 행사를 목록에서 지울까요? ‘변경 저장’ 전까지는 되돌릴 수 있습니다.'))return;doc.events=doc.events.filter(x=>x.id!==editing.id);$('#edit-dialog').close();render();toast('지웠습니다. ‘변경 저장’을 눌러야 반영됩니다.');};
