@@ -327,7 +327,7 @@ const EDIT_FIELDS=[
   ['title','행사명','text','full'],['date','행사 날짜','date'],['endDate','끝 날짜','date'],['start','시작','time'],['end','종료','time'],
   ['location','장소','text','full'],['benefit','혜택','text','full'],['category','혜택 종류','category'],['series','시즌 묶음','series'],
   ['eligibility','대상','text','full'],['rule','받는 조건','textarea','full'],['registration','사전신청','registration'],['deadline','신청 마감','date'],['deadlineTime','마감 시각','time'],
-  ['registrationUrl','신청 링크','url','full'],['sourceUrl','원문 링크 (필수)','url','full'],['source','출처 종류','source'],['verifiedAt','확인일','date'],
+  ['registrationUrl','신청 링크','url','full'],['sourceUrl','원문 링크 (있으면)','url','full'],['source','출처 종류','source'],['verifiedAt','확인일','date'],
   ['evidence','원문 근거 (짧게 인용)','textarea','full'],['uncertain','꼭 확인할 점 (한 줄에 하나)','lines','full'],['cancelled','취소됨','check']];
 let editing=null;// {id|null, event}
 function openEditor(e,isNew=false){
@@ -367,8 +367,10 @@ function applyEditor(){
   }
   if(!e.series)delete e.series;
   if(!e.registrationUrl)delete e.registrationUrl;
-  const err=[!e.title&&'행사명',!safeUrl(e.sourceUrl||'')&&'원문 링크(https)',!e.verifiedAt&&'확인일'].filter(Boolean);
-  if(err.length)return $('#edit-error').textContent=`${err.join(', ')} 칸을 채워 주세요. 원문으로 확인한 행사만 올립니다.`;
+  // 원문 링크는 있으면 넣는다. 게시판 포스터·카톡 공지처럼 링크가 없으면 원문 근거(원문 일부 인용)로 대신한다.
+  const err=[!e.title&&'행사명',!e.verifiedAt&&'확인일',!e.sourceUrl&&!e.evidence&&'원문 근거(링크가 없으면 원문 일부를 옮겨 적기)'].filter(Boolean);
+  if(err.length)return $('#edit-error').textContent=`${err.join(', ')} 칸을 채워 주세요.`;
+  if(e.sourceUrl&&!safeUrl(e.sourceUrl))return $('#edit-error').textContent='원문 링크는 https://로 시작해야 합니다.';
   if(e.start&&e.end&&e.end<=e.start)return $('#edit-error').textContent='종료시간은 시작시간 이후여야 합니다.';
   if(e.endDate&&e.date&&e.endDate<e.date)return $('#edit-error').textContent='끝 날짜는 행사 날짜 이후여야 합니다.';
   if(e.registrationUrl&&!safeUrl(e.registrationUrl))return $('#edit-error').textContent='신청 링크는 https://로 시작해야 합니다.';
